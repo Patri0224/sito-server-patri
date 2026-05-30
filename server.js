@@ -16,8 +16,15 @@ const connection = mysql.createConnection({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// 🎯 Tutta la cartella corrente diventa la sorgente dei file statici (index.html, spesa.css, spesa.js)
+app.use(express.static(__dirname));
 
-// --- API API API ---
+// Quando l'utente va su https://sito.patriserver.uk/ gli restituiamo direttamente l'index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// --- API API API (Rimangono identiche) ---
 
 // 1. GET: Restituisce la lista della spesa in formato JSON
 app.get('/api/spesa', (req, res) => {
