@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista della Spesa di Famiglia</title>
+    <link rel="stylesheet" href="spesa.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🛒 Lista della Spesa</h1>
+
+        <div class="form-card">
+            <input type="text" id="input-nome" placeholder="Cosa manca? (es: Zucchero 2Kg)" required>
+            
+            <select id="select-priorita">
+                <option value="">-- Priorità (Opzionale) --</option>
+                <option value="1">1 (Urgentissimo)</option>
+                <option value="2">2 (Alta)</option>
+                <option value="3">3 (Media)</option>
+                <option value="4">4 (Bassa)</option>
+                <option value="5">5 (Se avanza spazio)</option>
+            </select>
+
+            <select id="select-quantita">
+                <option value="">-- Stato (Opzionale) --</option>
+                <option value="se in offerta">Se in offerta</option>
+                <option value="poco">Poco</option>
+                <option value="finito">Finito</option>
+            </select>
+
+            <button id="btn-aggiungi" onclick="aggiungiProdotto()">+ AGGIUNGI</button>
+        </div>
+
+        <div id="lista-prodotti">
+            </div>
+
+        <button id="btn-svuota" class="hidden" onclick="svuotaTutto()">🗑️ SVUOTA TUTTA LA LISTA</button>
+    </div>
+
+    <script src="spesa.js"></script>
+</body>
+</html>
