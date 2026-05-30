@@ -16,14 +16,6 @@ const connection = mysql.createConnection({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// 📂 Rende la cartella "famiglia" pubblica. 
-// Se vai su /famiglia/spesa/spesa.html il browser la leggerà direttamente.
-app.use('/famiglia', express.static(path.join(__dirname, 'famiglia')));
-
-// Reindirizzamento di cortesia: se l'utente va sulla radice (/), lo mandiamo alla spesa
-app.get('/', (req, res) => {
-  res.redirect('/famiglia/spesa/spesa.html');
-});
 
 // --- API API API ---
 
