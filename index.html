@@ -20,20 +20,20 @@
     <div id="loginModal" class="modal hidden">
         <div class="modal-content">
             <h2 class="section-title">Login</h2>
-            <form id="loginForm" class="form">
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit" class="btn">Accedi</button>
-                <button type="button" id="closeModal" class="btn btn-secondary">Chiudi</button>
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit" class="btn">Login</button>
             </form>
-            <p id="loginError" class="error hidden">Credenziali errate</p>
         </div>
     </div>
 
     <!-- Contenuto -->
     <main class="main">
-        <section>
-            <h2 class="section-title">📂 App Pubbliche</h2>
+        <section id="famiglia" class="hidden">
+            <h2 class="section-title">📂 App Famiglia</h2>
             <div class="grid">
                 <a href="famiglia/spesa/spesa.html" class="card">
                     <h3 class="card-title">Lista della spesa</h3>
@@ -57,9 +57,9 @@
         <section>
             <h2 class="section-title">📱 App Complete</h2>
             <div class="grid">
-                <a href="personal/punteggio1/punteggio.html" class="card">
-                    <h3 class="card-title">Punteggio</h3>
-                    <p class="card-text">Tiene il punteggio di due squadre per indovina la canzone.</p>
+                <a href="giochi/2048/index.html" class="card">
+                    <h3 class="card-title">2048</h3>
+                    <p class="card-text">Il classico gioco del 2048, con griglia personalizzabile da 3x3 a 10x10!</p>
                 </a>
                 <a href="personal/simulator/index.html" class="card">
                     <h3 class="card-title">Simulator</h3>
@@ -80,6 +80,10 @@
         <section>
             <h2 class="section-title">🚧 Work in Progress</h2>
             <div class="grid">
+                <a href="personal/punteggio1/punteggio.html" class="card">
+                    <h3 class="card-title">Punteggio</h3>
+                    <p class="card-text">Tiene il punteggio di due squadre per indovina la canzone.</p>
+                </a>
                 <a href="personal/spada/index.html" class="card">
                     <h3 class="card-title">Spada</h3>
                     <p class="card-text">Gioco di spada</p>
