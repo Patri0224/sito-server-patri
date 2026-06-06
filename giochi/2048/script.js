@@ -123,6 +123,14 @@ window.addEventListener('touchend', (event) => {
 
     gestisciSwipe();
 }, { passive: true });
+// Impedisce l'aggiornamento della pagina (pull-to-refresh) durante il movimento del dito
+window.addEventListener('touchmove', function(event) {
+    // Applichiamo il blocco solo se l'utente sta scorrendo sul body o sul gioco,
+    // lasciando liberi eventuali altri elementi se necessario.
+    if (event.touches.length === 1) {
+        event.preventDefault();
+    }
+}, { passive: false }); // NOTA: 'passive: false' è fondamentale per permettere a preventDefault() di funzionare
 
 function gestisciSwipe() {
     const diffX = touchEndX - touchStartX;
@@ -149,8 +157,15 @@ function gestisciSwipe() {
 
 // ==========================================
 // 3. LA TUA FUNZIONE DI GESTIONE MOVIMENTO
-// ==========================================
+// =========================================
+let ultimoComandoTime = 0;
 function mossa(direzione) {
+
+const adesso = Date.now();
+    if (adesso - ultimoComandoTime < 50) {
+        return; 
+    }
+    ultimoComandoTime = adesso;
     const size = parseInt(document.getElementById('grid-size').value);
     let mossoQualcosa = false;
 
