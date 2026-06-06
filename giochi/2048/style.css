@@ -155,3 +155,55 @@
      animation: shake 1s;
      background-color: #ff4d4d !important;
  }
+/* Container principale del controller mobile */
+.mobile-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25px;
+    gap: 5px;
+}
+
+/* Riga centrale per i tasti Sinistra e Destra */
+.mobile-controls .middle-row {
+    display: flex;
+    align-items: center;
+    gap: 45px; /* Spazio tra il tasto sinistra e destra (dove idealmente ci sarebbe il centro) */
+}
+
+/* Stile comune a tutti i bottoni di movimento */
+.btn-move {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: #8f7a66;
+    color: #f9f6f2;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none; /* Impedisce di selezionare il testo tenendo premuto */
+    -webkit-user-select: none;
+}
+
+/* Effetto alla pressione */
+.btn-move:active {
+    background-color: #776e65;
+    transform: scale(0.95);
+}
+
+/* Spaziatore invisibile al centro della riga mediana per tenere distanti i tasti */
+.mobile-controls .spacer {
+    width: 15px;
+}
+
+/* MEDIA QUERY: Se lo schermo è più grande di 768px (Computer), nasconde i bottoni */
+@media (min-width: 769px) {
+    .mobile-controls {
+        display: none;
+    }
+}
