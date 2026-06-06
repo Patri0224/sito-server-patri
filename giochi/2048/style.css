@@ -7,6 +7,10 @@
      margin: 0;
      padding: 20px;
  }
+html, body {
+    /* Impedisce il pull-to-refresh e il rimbalzo della pagina alle estremità */
+    overscroll-behavior-y: contain; 
+}
 
  h1 {
      color: #333;
