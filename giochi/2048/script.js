@@ -109,7 +109,7 @@ let touchStartX = 0;
 let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
-
+/*
 const minSwipeDistance = 40;
 
 window.addEventListener('touchstart', (event) => {
@@ -154,7 +154,7 @@ function gestisciSwipe() {
         }
     }
 }
-
+*/
 // ==========================================
 // 3. LA TUA FUNZIONE DI GESTIONE MOVIMENTO
 // =========================================
