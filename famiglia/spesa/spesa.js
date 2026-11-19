@@ -42,7 +42,6 @@ function inizializzaAutocompletamento() {
                 };
                 boxSuggerimenti.appendChild(div);
             });
-
             boxSuggerimenti.classList.remove('hidden');
         } catch (errore) {
             console.error("Errore suggerimenti:", errore);
