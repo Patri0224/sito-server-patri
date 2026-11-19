@@ -124,3 +124,36 @@ input, select {
     margin-top: 30px;
     font-size: 18px;
 }
+.suggerimenti-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    z-index: 1000;
+    max-height: 220px;
+    overflow-y: auto;
+}
+.suggerimento-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+}
+.suggerimento-item:hover {
+    background-color: #f4f8ff;
+}
+.suggerimento-count {
+    font-size: 0.85em;
+    color: #777;
+    background: #eee;
+    padding: 2px 8px;
+    border-radius: 12px;
+}

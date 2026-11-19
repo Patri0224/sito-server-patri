@@ -4,7 +4,6 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-// Connessione al database MariaDB
 const connection = mysql.createConnection({
   host: 'database',
   user: 'utente_sito',
@@ -12,21 +11,15 @@ const connection = mysql.createConnection({
   database: 'db_sito'
 });
 
-// Permette a Node di leggere sia i dati dei Form (POST) sia i dati JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// 🎯 Tutta la cartella corrente diventa la sorgente dei file statici (index.html, spesa.css, spesa.js)
 app.use(express.static(__dirname));
 
-// Quando l'utente va su https://sito.patriserver.uk/ gli restituiamo direttamente l'index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// --- API API API (Rimangono identiche) ---
-
-// 1. GET: Restituisce la lista della spesa in formato JSON
+// 1. GET: Restituisce la lista della spesa
 app.get('/api/spesa', (req, res) => {
   connection.query('SELECT * FROM spesa ORDER BY priorita ASC, nome ASC', (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -34,20 +27,48 @@ app.get('/api/spesa', (req, res) => {
   });
 });
 
-// 2. POST: Aggiunge o aggiorna un elemento
+// 2. POST: Aggiunge alla lista della spesa E aggiorna lo storico dei cibi
 app.post('/api/spesa/aggiungi', (req, res) => {
   let { nome, priorita, quantita } = req.body;
   if (priorita === "" || priorita === undefined) priorita = null;
   if (quantita === "" || quantita === undefined) quantita = null;
 
-  const query = 'INSERT INTO spesa (nome, priorita, quantita) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE priorita=?, quantita=?';
-  connection.query(query, [nome, priorita, quantita, priorita, quantita], (err) => {
+  const querySpesa = 'INSERT INTO spesa (nome, priorita, quantita) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE priorita=?, quantita=?';
+  connection.query(querySpesa, [nome, priorita, quantita, priorita, quantita], (err) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json({ success: true });
+
+    // Aggiorna lo storico aumentando di 1 il contatore se il nome esiste già
+    const queryStorico = 'INSERT INTO storico_cibi (nome, utilizzi) VALUES (?, 1) ON DUPLICATE KEY UPDATE utilizzi = utilizzi + 1';
+    connection.query(queryStorico, [nome], (errStorico) => {
+      if (errStorico) console.error('Errore aggiornamento storico:', errStorico);
+      res.json({ success: true });
+    });
   });
 });
 
-// 3. POST: Elimina un singolo elemento
+// 3. GET: Cerca nei cibi storici ordinando per prefisso, frequenza d'uso e ordine alfabetico
+app.get('/api/suggerimenti', (req, res) => {
+  const q = (req.query.q || '').trim();
+  if (!q) return res.json([]);
+
+  const query = `
+    SELECT nome, utilizzi 
+    FROM storico_cibi 
+    WHERE nome LIKE ? 
+    ORDER BY 
+      CASE WHEN nome LIKE ? THEN 0 ELSE 1 END ASC,
+      utilizzi DESC,
+      nome ASC
+    LIMIT 10
+  `;
+  
+  connection.query(query, [`%${q}%`, `${q}%`], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
+// 4. POST: Elimina un singolo elemento
 app.post('/api/spesa/elimina-singolo', (req, res) => {
   const { nome } = req.body;
   connection.query('DELETE FROM spesa WHERE nome = ?', [nome], (err) => {
@@ -56,7 +77,7 @@ app.post('/api/spesa/elimina-singolo', (req, res) => {
   });
 });
 
-// 4. POST: Svuota la lista completa
+// 5. POST: Svuota la lista completa
 app.post('/api/spesa/svuota-tutto', (req, res) => {
   connection.query('TRUNCATE TABLE spesa', (err) => {
     if (err) return res.status(500).json({ error: err.message });

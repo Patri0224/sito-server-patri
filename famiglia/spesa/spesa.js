@@ -1,7 +1,63 @@
-// Esegui il caricamento iniziale dei dati appena la pagina è pronta
-document.addEventListener('DOMContentLoaded', caricaLista);
+document.addEventListener('DOMContentLoaded', () => {
+    caricaLista();
+    inizializzaAutocompletamento();
+});
 
-// 1. Funzione per leggere la lista dal database e stamparla in HTML
+// Gestione tendina suggerimenti mentre digiti
+function inizializzaAutocompletamento() {
+    const inputNome = document.getElementById('input-nome');
+    const boxSuggerimenti = document.getElementById('lista-suggerimenti');
+
+    inputNome.addEventListener('input', async () => {
+        const testo = inputNome.value.trim();
+        
+        if (testo.length === 0) {
+            boxSuggerimenti.innerHTML = '';
+            boxSuggerimenti.classList.add('hidden');
+            return;
+        }
+
+        try {
+            const risposta = await fetch(`/api/suggerimenti?q=${encodeURIComponent(testo)}`);
+            const suggerimenti = await risposta.json();
+
+            if (suggerimenti.length === 0) {
+                boxSuggerimenti.innerHTML = '';
+                boxSuggerimenti.classList.add('hidden');
+                return;
+            }
+
+            boxSuggerimenti.innerHTML = '';
+            suggerimenti.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'suggerimento-item';
+                div.innerHTML = `
+                    <span>${item.nome}</span>
+                    <span class="suggerimento-count">x${item.utilizzi}</span>
+                `;
+                // Quando clicchi un suggerimento, lo inserisce nell'input e chiude il menu
+                div.onclick = () => {
+                    inputNome.value = item.nome;
+                    boxSuggerimenti.classList.add('hidden');
+                };
+                boxSuggerimenti.appendChild(div);
+            });
+
+            boxSuggerimenti.classList.remove('hidden');
+        } catch (errore) {
+            console.error("Errore suggerimenti:", errore);
+        }
+    });
+
+    // Chiude la tendina se clicchi fuori
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.autocomplete-wrapper')) {
+            boxSuggerimenti.classList.add('hidden');
+        }
+    });
+}
+
+// 1. Legge la lista attuale
 async function caricaLista() {
     try {
         const risposta = await fetch('/api/spesa');
@@ -10,17 +66,16 @@ async function caricaLista() {
         const contenitore = document.getElementById('lista-prodotti');
         const btnSvuota = document.getElementById('btn-svuota');
         
-        contenitore.innerHTML = ''; // Svuota lo schermo prima di ridisegnare
+        contenitore.innerHTML = '';
 
         if (prodotti.length === 0) {
             contenitore.innerHTML = '<p class="messaggio-vuoto">La lista è vuota! Frigo pieno. 🥳</p>';
-            btnSvuota.classList.add('hidden'); // Nasconde il tasto svuota tutto
+            btnSvuota.classList.add('hidden');
             return;
         }
 
-        btnSvuota.classList.remove('hidden'); // Mostra il tasto svuota tutto
+        btnSvuota.classList.remove('hidden');
 
-        // Ciclo su ogni prodotto per generare i rettangoli (card)
         prodotti.forEach(prodotto => {
             const badgePrio = prodotto.priorita ? `<span class="badge badge-prio">Prio: ${prodotto.priorita}</span>` : '';
             const badgeStato = prodotto.quantita ? `<span class="badge badge-stato">${prodotto.quantita}</span>` : '';
@@ -41,11 +96,12 @@ async function caricaLista() {
     }
 }
 
-// 2. Funzione per aggiungere un prodotto
+// 2. Aggiunge un prodotto
 async function aggiungiProdotto() {
     const inputNome = document.getElementById('input-nome');
     const selectPrio = document.getElementById('select-priorita');
     const selectStato = document.getElementById('select-quantita');
+    const boxSuggerimenti = document.getElementById('lista-suggerimenti');
 
     const nome = inputNome.value.trim();
     const priorita = selectPrio.value;
@@ -56,34 +112,33 @@ async function aggiungiProdotto() {
         return;
     }
 
-    // Invia i dati a Node.js in formato JSON
     await fetch('/api/spesa/aggiungi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome, priorita, quantita })
     });
 
-    // Pulisce il form e rinfresca la lista a schermo
     inputNome.value = '';
     selectPrio.value = '';
     selectStato.value = '';
+    boxSuggerimenti.classList.add('hidden');
     caricaLista();
 }
 
-// 3. Funzione per eliminare un singolo elemento
+// 3. Elimina un singolo elemento
 async function eliminaProdotto(nomeProdotto) {
     await fetch('/api/spesa/elimina-singolo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome: nomeProdotto })
     });
-    caricaLista(); // Aggiorna lo schermo
+    caricaLista();
 }
 
-// 4. Funzione per spazzare via tutta la lista
+// 4. Svuota tutta la lista
 async function svuotaTutto() {
     if (confirm("Vuoi davvero cancellare l'intera lista della spesa?")) {
         await fetch('/api/spesa/svuota-tutto', { method: 'POST' });
-        caricaLista(); // Aggiorna lo schermo
+        caricaLista();
     }
 }

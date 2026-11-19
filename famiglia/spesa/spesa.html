@@ -12,7 +12,10 @@
         <h1>🛒 Lista della Spesa</h1>
 
         <div class="form-card">
-            <input type="text" id="input-nome" placeholder="Cosa manca? (es: Zucchero 2Kg)" required>
+            <div class="autocomplete-wrapper" style="position: relative; width: 100%;">
+                <input type="text" id="input-nome" placeholder="Cosa manca? (es: Zucchero 2Kg)" autocomplete="off" required>
+                <div id="lista-suggerimenti" class="suggerimenti-box hidden"></div>
+            </div>
             
             <select id="select-priorita">
                 <option value="">-- Priorità (Opzionale) --</option>
@@ -33,8 +36,7 @@
             <button id="btn-aggiungi" onclick="aggiungiProdotto()">+ AGGIUNGI</button>
         </div>
 
-        <div id="lista-prodotti">
-            </div>
+        <div id="lista-prodotti"></div>
 
         <button id="btn-svuota" class="hidden" onclick="svuotaTutto()">🗑️ SVUOTA TUTTA LA LISTA</button>
     </div>
