@@ -1,1 +1,8 @@
 ~/progetti/aggiorna_sito.sh
+
+
+o fare
+
+ cd /home/patri/progetti/sito
+ git pull
+ docker restart mio_sito_node
